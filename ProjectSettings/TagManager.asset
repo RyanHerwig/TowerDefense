@@ -6,17 +6,22 @@ TagManager:
   tags:
   - LowerGround
   - Path
+  - Entrance
+  - Exit
+  - Higher Ground
+  - Water
+  - Wall
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Enemy
+  - Wall
+  - Tower
   - 
   - 
   - 
