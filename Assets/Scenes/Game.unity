@@ -249,7 +249,7 @@ Transform:
   - {fileID: 2077693905}
   - {fileID: 1275786673}
   - {fileID: 976259120}
-  m_Father: {fileID: 1180227571}
+  m_Father: {fileID: 975749891}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &51569347
 GameObject:
@@ -976,7 +976,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyManager
   spawnedEnemies: []
-  enemyFolder: {fileID: 1973869233}
+  spawnedEnemiesTransform: []
+  enemyFolder: {fileID: 0}
 --- !u!1 &521167847
 GameObject:
   m_ObjectHideFlags: 0
@@ -1529,7 +1530,7 @@ Transform:
   - {fileID: 410641706}
   - {fileID: 171946324}
   - {fileID: 1902947396}
-  - {fileID: 1180227571}
+  - {fileID: 28805440}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &976259119
@@ -2007,38 +2008,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1117854791}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1180227570
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1180227571}
-  m_Layer: 0
-  m_Name: Key Objects
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
---- !u!4 &1180227571
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1180227570}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 28805440}
-  m_Father: {fileID: 975749891}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1190979896
 GameObject:
   m_ObjectHideFlags: 0
@@ -2439,7 +2408,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1061a2215923c6142845a828b6f12278, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  shouldGameEnd: 0
+  runGame: 0
+  nodePositions: []
+  nodeFolder: {fileID: 28805440}
 --- !u!1 &1327960771
 GameObject:
   m_ObjectHideFlags: 0

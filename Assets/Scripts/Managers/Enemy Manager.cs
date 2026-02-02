@@ -6,7 +6,7 @@ public class EnemyManager : MonoBehaviour
     #region Singleton
     private static EnemyManager instance;
 
-    public static EnemyManager GetInstance
+    public static EnemyManager Instance
     {
         get
         {
@@ -17,70 +17,73 @@ public class EnemyManager : MonoBehaviour
     }
     #endregion
 
+    GameManager gameManager;
     public List<Enemy> spawnedEnemies;
+    public List<Transform> spawnedEnemiesTransform;
     public Dictionary<int, GameObject> enemyPrefabs;
     public Dictionary<int, Queue<Enemy>> enemyObjectPools;
     [SerializeField] Transform enemyFolder;
-
-    void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
     public void Init()
     {
-        enemyPrefabs = new Dictionary<int, GameObject>();
-        enemyObjectPools = new Dictionary<int, Queue<Enemy>>();
-        spawnedEnemies = new List<Enemy>();
 
-        //Grabs all data for enemies inside Resources/Enemy folder
+        gameManager = GameManager.Instance;
+        spawnedEnemies = new();
+        spawnedEnemiesTransform = new();
+        enemyPrefabs = new();
+        enemyObjectPools = new();
+
+
+        //Loads Enemy Data on runtime
         EnemyData[] enemies = Resources.LoadAll<EnemyData>("Enemy");
 
-        foreach(EnemyData enemy in enemies)
+        //Loads enemy data into Dictionaries
+        foreach (EnemyData enemy in enemies)
         {
             enemyPrefabs.Add(enemy.EnemyID, enemy.EnemyPrefab);
             enemyObjectPools.Add(enemy.EnemyID, new Queue<Enemy>());
         }
     }
 
-    public Enemy SpawnEnemy(int enemyId)
+    public Enemy SpawnEnemy(int enemyID)
     {
-        Enemy spawnedEnemy = null;
-
-        if (enemyPrefabs.ContainsKey(enemyId))
+        Enemy spawnedEnemy;
+        if (enemyPrefabs.ContainsKey(enemyID))
         {
-            //Checks Object Pool for enemy type
-            Queue<Enemy> queue = enemyObjectPools[enemyId];
+            Queue<Enemy> queue = enemyObjectPools[enemyID];
 
-            //If object pool is not empty, grab object out of pool
             if (queue.Count > 0)
             {
+                //Dequeue enemy and initialize it
                 spawnedEnemy = queue.Dequeue();
                 spawnedEnemy.Init();
+
                 spawnedEnemy.gameObject.SetActive(true);
             }
-            //If pool is empty, instantiate a new object for the pool
             else
             {
-                GameObject newEnemy = Instantiate(enemyPrefabs[enemyId], Vector3.zero, Quaternion.identity, enemyFolder);
+                //Instantiate new insatnce of enemy and initialize
+                GameObject newEnemy = Instantiate(enemyPrefabs[enemyID], gameManager.enemySpawnNode, Quaternion.identity);
                 spawnedEnemy = newEnemy.GetComponent<Enemy>();
-                spawnedEnemy.id = enemyId;
                 spawnedEnemy.Init();
             }
-        } else
+        }
+        else
         {
-            print($"ENEMY SPAWNER: INVALID ENEMY ID: {enemyId} DETECTED WHEN SPAWNING");
+            print($"ENEMY SPAWNER: INVALID ENEMY ID: {enemyID} DETECTED WHEN SPAWNING");
             return null;
         }
 
         spawnedEnemies.Add(spawnedEnemy);
+        spawnedEnemiesTransform.Add(spawnedEnemy.transform);
+        spawnedEnemy.id = enemyID;
         return spawnedEnemy;
     }
 
     public void RemoveEnemy(Enemy enemy)
     {
-        //Return enemy to pool to be reused later
         enemyObjectPools[enemy.id].Enqueue(enemy);
-        spawnedEnemies.Remove(enemy);
         enemy.gameObject.SetActive(false);
+        spawnedEnemies.Remove(enemy);
+        spawnedEnemiesTransform.Remove(enemy.transform);
     }
 }
