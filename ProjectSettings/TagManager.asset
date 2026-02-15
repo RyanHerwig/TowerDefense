@@ -5,12 +5,11 @@ TagManager:
   serializedVersion: 3
   tags:
   - LowerGround
-  - Path
-  - Entrance
-  - Exit
   - Higher Ground
   - Water
   - Wall
+  - Invalid Tower Placement
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -22,7 +21,7 @@ TagManager:
   - Enemy
   - Wall
   - Tower
-  - 
+  - Ammo
   - 
   - 
   - 

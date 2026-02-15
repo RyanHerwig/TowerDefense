@@ -4,5 +4,12 @@ using UnityEngine;
 public class EnemyData : ScriptableObject
 {
     public GameObject EnemyPrefab;
-    public int EnemyID;
+    public EnemyType EnemyID;
+}
+
+public enum EnemyType
+{
+    Basic = 1,
+    Fast = 2,
+    Slow = 3
 }

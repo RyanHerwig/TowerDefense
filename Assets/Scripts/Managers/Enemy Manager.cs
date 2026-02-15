@@ -20,8 +20,10 @@ public class EnemyManager : MonoBehaviour
     GameManager gameManager;
     public List<Enemy> spawnedEnemies;
     public List<Transform> spawnedEnemiesTransform;
-    public Dictionary<int, GameObject> enemyPrefabs;
-    public Dictionary<int, Queue<Enemy>> enemyObjectPools;
+    public Dictionary<EnemyType, GameObject> enemyPrefabs;
+    public Dictionary<EnemyType, Queue<Enemy>> enemyObjectPools;
+
+    public Dictionary<Transform, Enemy> enemyTransformDict;
     [SerializeField] Transform enemyFolder;
     public void Init()
     {
@@ -31,12 +33,13 @@ public class EnemyManager : MonoBehaviour
         spawnedEnemiesTransform = new();
         enemyPrefabs = new();
         enemyObjectPools = new();
+        enemyTransformDict = new();
 
 
-        //Loads Enemy Data on runtime
+        // Loads Enemy Data on runtime
         EnemyData[] enemies = Resources.LoadAll<EnemyData>("Enemy");
 
-        //Loads enemy data into Dictionaries
+        // Loads enemy data into Dictionaries
         foreach (EnemyData enemy in enemies)
         {
             enemyPrefabs.Add(enemy.EnemyID, enemy.EnemyPrefab);
@@ -44,7 +47,7 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    public Enemy SpawnEnemy(int enemyID)
+    public Enemy SpawnEnemy(EnemyType enemyID)
     {
         Enemy spawnedEnemy;
         if (enemyPrefabs.ContainsKey(enemyID))
@@ -53,7 +56,7 @@ public class EnemyManager : MonoBehaviour
 
             if (queue.Count > 0)
             {
-                //Dequeue enemy and initialize it
+                // Dequeue enemy and initialize it
                 spawnedEnemy = queue.Dequeue();
                 spawnedEnemy.Init();
 
@@ -61,8 +64,8 @@ public class EnemyManager : MonoBehaviour
             }
             else
             {
-                //Instantiate new insatnce of enemy and initialize
-                GameObject newEnemy = Instantiate(enemyPrefabs[enemyID], gameManager.enemySpawnNode, Quaternion.identity);
+                // Instantiate new insatnce of enemy and initialize
+                GameObject newEnemy = Instantiate(enemyPrefabs[enemyID], gameManager.enemySpawnNode, Quaternion.identity, enemyFolder);
                 spawnedEnemy = newEnemy.GetComponent<Enemy>();
                 spawnedEnemy.Init();
             }
@@ -73,17 +76,30 @@ public class EnemyManager : MonoBehaviour
             return null;
         }
 
-        spawnedEnemies.Add(spawnedEnemy);
-        spawnedEnemiesTransform.Add(spawnedEnemy.transform);
-        spawnedEnemy.id = enemyID;
+        // Failsafe - If enemy is already inside list, do not duplicate it
+        // Adds ememies to active enemies list
+        if (!spawnedEnemies.Contains(spawnedEnemy)) spawnedEnemies.Add(spawnedEnemy);
+        if (!spawnedEnemiesTransform.Contains(spawnedEnemy.transform)) spawnedEnemiesTransform.Add(spawnedEnemy.transform);
+        if (!enemyTransformDict.ContainsKey(spawnedEnemy.transform))
+        {
+            enemyTransformDict.Add(spawnedEnemy.transform, spawnedEnemy);
+        }
+        spawnedEnemy.Id = enemyID;
         return spawnedEnemy;
     }
 
     public void RemoveEnemy(Enemy enemy)
     {
-        enemyObjectPools[enemy.id].Enqueue(enemy);
+        enemyObjectPools[enemy.Id].Enqueue(enemy);
         enemy.gameObject.SetActive(false);
+        enemy.isAlive = false;
         spawnedEnemies.Remove(enemy);
         spawnedEnemiesTransform.Remove(enemy.transform);
+        enemyTransformDict.Remove(enemy.transform);
+
+        if (spawnedEnemies.Count == 0)
+        {
+            gameManager.isWaveActive = false;
+        }
     }
 }
