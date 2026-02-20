@@ -1,16 +1,30 @@
+using System;
 using UnityEngine;
 
-public class Flamethrower : MonoBehaviour
+public class Flamethrower : TowerDamage
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private Collider fireTrigger;
+    [SerializeField] private ParticleSystem fireEffect;
+    [NonSerialized] public float damage;
+    public override void Init(float attackDamage, float specialDamage, float trueDamage, float fireRate, float startingDelay)
     {
-        
+        AttackDamage = attackDamage;
+        SpecialDamage = specialDamage;
+        TrueDamage = trueDamage;
+        FireRate = fireRate;
+        delay = startingDelay;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void DamageTick(Enemy target)
     {
-        
+        fireTrigger.enabled = target != null;
+
+        if(target)
+        {
+            if (!fireEffect.isPlaying) fireEffect.Play();
+            return;
+        }
+
+        fireEffect.Stop();
     }
 }

@@ -26,9 +26,9 @@ public abstract class Ammo : MonoBehaviour
     {
         gameObject.SetActive(true);
         towerOrigin = source;
-        AttackDamage = source.attackDamage;
-        SpecialDamage = source.specialDamage;
-        TrueDamage = source.trueDamage;
+        AttackDamage = source.AttackDamage;
+        SpecialDamage = source.SpecialDamage;
+        TrueDamage = source.TrueDamage;
         transform.position = spawnPoint.position;
 
         gameManager = GameManager.Instance;

@@ -35,7 +35,7 @@ public class Tower : MonoBehaviour, IPointerClickHandler
 
     [NonSerialized] public Enemy Target;
 
-    [NonSerialized] public TowerTarget.TargetPriority currentPriority;
+    [NonSerialized] public TargetPriority currentPriority;
     private float delay;
 
     TowerDamage towerDamage;
@@ -45,7 +45,7 @@ public class Tower : MonoBehaviour, IPointerClickHandler
     void Start()
     {
         delay = 1 / FireRate;
-        currentPriority = TowerTarget.TargetPriority.First;
+        currentPriority = TargetPriority.First;
         towerDamage = GetComponent<TowerDamage>();
         mesh = GetComponentInChildren<TowerRangeMesh>();
         towerDamage.Init(AttackDamage, SpecialDamage, TrueDamage, FireRate, PlacementDelay);

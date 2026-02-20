@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
     private Queue<DamageData> damageQueue;
     private Queue<EnemyType> enemySpawnQueue;
     private Queue<Enemy> enemyRemoveQueue;
+    private Queue<TowerEffectData> towerEffectQueue;
+    private Queue<EnemyEffectData> enemyEffectQueue;
     [NonSerialized] public List<Tower> towersInGame;
 
     AmmoManager ammoManager;
@@ -50,7 +52,7 @@ public class GameManager : MonoBehaviour
     {
         while (runGame)
         {
-            //Spawn Enemies
+            // Spawn Enemies
             if (enemySpawnQueue.Count > 0)
             {
                 for (int i = 0; i < enemySpawnQueue.Count; i++)
@@ -58,9 +60,9 @@ public class GameManager : MonoBehaviour
                     enemyManager.SpawnEnemy(enemySpawnQueue.Dequeue());
                 }
             }
-            //Spawn Towers
+            // Spawn Towers
 
-            //Move Enemies
+            // Move Enemies
             NativeArray<Vector3> activeNodes = new NativeArray<Vector3>(nodePositions, Allocator.TempJob);
             NativeArray<int> nodeIndices = new NativeArray<int>(enemyManager.spawnedEnemies.Count, Allocator.TempJob);
             NativeArray<float> enemySpeeds = new NativeArray<float>(enemyManager.spawnedEnemies.Count, Allocator.TempJob);
@@ -88,8 +90,8 @@ public class GameManager : MonoBehaviour
                 Enemy currentEnemy = enemyManager.spawnedEnemies[i];
                 currentEnemy.NodeIndex = nodeIndices[i];
 
-                //Checks if enemy has reached the end
-                //If so, lose life
+                // Checks if enemy has reached the end
+                // If so, lose life
                 if (currentEnemy.NodeIndex == nodePositions.Length)
                 {
                     EnqueueRemoveEnemy(currentEnemy);
@@ -101,16 +103,46 @@ public class GameManager : MonoBehaviour
             nodeIndices.Dispose();
             enemyAccess.Dispose();
 
-            //Tick Towers
+            // Tick Towers
             foreach (Tower tower in towersInGame)
             {
                 tower.Target = towerTarget.GetTarget(tower, tower.currentPriority);
                 tower.Tick();
             }
 
-            //Apply Effects
+            // Apply Effects
+            if (enemyEffectQueue.Count > 0)
+            {
+                int effectAmount = enemyEffectQueue.Count;
+                for (int i = 0; i < effectAmount; i++)
+                {
+                    EnemyEffectData currentEffectData = enemyEffectQueue.Dequeue();
 
-            //Damage Enemies
+                    // Attempts to get effect with exact same properties
+                    EnemyEffect effectDuplicate = currentEffectData.Target.ActiveEffects.Find(x => x.Name == currentEffectData.Effect.Name 
+                            && x.Id == currentEffectData.Effect.Id);
+                    if (effectDuplicate == null)
+                    {
+                        currentEffectData.Target.ActiveEffects.Add(currentEffectData.Effect);
+                    }
+                    else if (effectDuplicate.Duration < currentEffectData.Effect.Duration)
+                    {
+                        effectDuplicate.Duration = currentEffectData.Effect.Duration;
+                    }
+
+                    // Apply Buffs
+                }
+            }
+
+            // Removes Buffs
+
+            // Tick Enemies
+            foreach (Enemy enemy in enemyManager.spawnedEnemies)
+            {
+                enemy.Tick();
+            }
+
+            // Damage Enemies
             if (damageQueue.Count > 0)
             {
                 /* Damage Formula:
@@ -125,41 +157,41 @@ public class GameManager : MonoBehaviour
                     DamageData currentDamageData = damageQueue.Dequeue();
                     Enemy damagedEnemy = currentDamageData.TargetEnemy;
 
-                    //Enemy Takes Physical Damage
+                    // Enemy Takes Physical Damage
                     if (currentDamageData.AttackDamage > 0 && !damagedEnemy.ImmuneToPhysical)
                     {
                         if (damagedEnemy.Defense >= 0)
                         {
-                            //Enemy Takes reduced damage
+                            // Enemy Takes reduced damage
                             damagedEnemy.Health = Mathf.Round((damagedEnemy.Health -
                                 currentDamageData.AttackDamage * (100 / (100 + damagedEnemy.Defense))) * 100f) / 100f; //Rounds damage to nearest hundredths place
                         }
                         else
                         {
-                            //Enemy Takes More damage
+                            // Enemy Takes More damage
                             damagedEnemy.Health = Mathf.Round((damagedEnemy.Health -
                                 currentDamageData.AttackDamage * ((100 - damagedEnemy.Defense) / 100)) * 100f) / 100f; //Rounds damage to nearest hundredths place
                         }
                     }
 
-                    //Enemy Takes Special Damage (if it isn't already dead)
+                    // Enemy Takes Special Damage (if it isn't already dead)
                     if (damagedEnemy.Health > 0 && currentDamageData.SpecialDamage > 0 && !damagedEnemy.ImmuneToSpecial)
                     {
                         if (damagedEnemy.Resistance >= 0)
                         {
-                            //Enemy Takes reduced damage
+                            // Enemy Takes reduced damage
                             damagedEnemy.Health = Mathf.Round((damagedEnemy.Health -
                                 currentDamageData.SpecialDamage * (100 / (100 + damagedEnemy.Resistance))) * 100f) / 100f; //Rounding removes floating point errors
                         }
                         else
                         {
-                            //Enemy Takes More damage
+                            // Enemy Takes More damage
                             damagedEnemy.Health = Mathf.Round((damagedEnemy.Health -
                                 currentDamageData.SpecialDamage * ((100 - damagedEnemy.Resistance) / 100)) * 100f) / 100f; //Rounding removes floating point errors
                         }
                     }
 
-                    //Enemy Takes True Damage (if it isn't already dead)
+                    // Enemy Takes True Damage (if it isn't already dead)
                     if (damagedEnemy.Health > 0)
                         damagedEnemy.Health -= currentDamageData.TrueDamage;
 
@@ -172,7 +204,7 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            //Remove Enemies
+            // Remove Enemies
             if (enemyRemoveQueue.Count > 0)
             {
                 int amountToRemove = enemyRemoveQueue.Count;
@@ -182,10 +214,20 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            //Remove Towers
+            // Remove Towers
 
             yield return null;
         }
+    }
+
+    public void EnqueueTowerEffects(TowerEffectData effectData)
+    {
+        towerEffectQueue.Enqueue(effectData);
+    }
+
+    public void EnqueueEnemyEffects(EnemyEffectData effectData)
+    {
+        enemyEffectQueue.Enqueue(effectData);
     }
 
     public void EnqueueDamageData(DamageData damageData)
@@ -228,6 +270,8 @@ public class GameManager : MonoBehaviour
         damageQueue = new Queue<DamageData>();
         enemySpawnQueue = new Queue<EnemyType>();
         enemyRemoveQueue = new Queue<Enemy>();
+        towerEffectQueue = new Queue<TowerEffectData>();
+        enemyEffectQueue = new Queue<EnemyEffectData>();
         isWaveActive = false;
 
         towersInGame = new();

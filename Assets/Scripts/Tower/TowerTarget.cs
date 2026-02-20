@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
@@ -6,16 +7,6 @@ using UnityEngine;
 
 public class TowerTarget
 {
-    public enum TargetPriority
-    {
-        First,
-        Last,
-        Closest,
-        Farthest,
-        Strongest,
-        Weakest
-    }
-
     GameManager gameManager;
     EnemyManager enemyManager;
     public TargetPriority currentPriority;
@@ -38,6 +29,7 @@ public class TowerTarget
         currentPriority = priority;
         float minimumRange = currentTower.MinRange;
 
+
         List<Collider> enemiesInRange;
 
         // If Tower has minimum range...
@@ -47,6 +39,7 @@ public class TowerTarget
             Collider[] enemiesTooClose = Physics.OverlapSphere(currentTower.transform.position, minimumRange, currentTower.targetLayer);
 
             //Find all enemies within maximum range
+            
             enemiesInRange = Physics.OverlapSphere(currentTower.transform.position, currentTower.MaxRange, currentTower.targetLayer).ToList();
 
             // Remove all enemies that are below the minimum range for consideration
@@ -64,25 +57,19 @@ public class TowerTarget
         // If there are no enemies close enough, stop
         if (enemiesInRange.Count == 0)
             return null;
-
         NativeArray<EnemyDataValue> enemiesToCalculate = new(enemiesInRange.Count, Allocator.TempJob); // All canindates to consider to be fired upon
         NativeArray<Vector3> nodePositions = new(gameManager.nodePositions, Allocator.TempJob); // Track all node positions
         NativeArray<float> nodeDistances = new(gameManager.nodeDistances, Allocator.TempJob); // Track all distances from one node to another node
         NativeArray<int> enemyToIndex = new(1, Allocator.TempJob); // The index of all enemies
         int enemyIndexReturn = -1; // The index of the enemy chosen to be riddled with bullet holes
 
-        int enemyLength = enemiesInRange.Count; // Size of canidate list
-        for (int i = 0; i < enemyLength; i++)
+        int enemyListCount = enemiesInRange.Count;
+        for (int i = 0; i < enemyListCount; i++)
         {
-            // Gets enemy object from canidate
-            Enemy tempEnemy = enemiesInRange[i].transform.parent.GetComponent<Enemy>();
-
-            // Gets the index of the enemy
+            Enemy tempEnemy = enemiesInRange[i].GetComponent<Enemy>();
             int enemyIndexInList = enemyManager.spawnedEnemies.FindIndex(x => x == tempEnemy);
 
-            // Adds enemy to canidate list
-            if (enemyIndexInList != -1)
-                enemiesToCalculate[i] = new EnemyDataValue(enemyIndexInList, tempEnemy.transform.position, tempEnemy.NodeIndex, tempEnemy.Health);
+            enemiesToCalculate[i] = new EnemyDataValue(enemyIndexInList, tempEnemy.transform.position, tempEnemy.NodeIndex, tempEnemy.Health);
         }
 
         // Variables for determing enemy priority
@@ -309,4 +296,14 @@ public class TowerTarget
             return finalDistance;
         }
     }
+}
+
+public enum TargetPriority
+{
+    First,
+    Last,
+    Closest,
+    Farthest,
+    Strongest,
+    Weakest
 }

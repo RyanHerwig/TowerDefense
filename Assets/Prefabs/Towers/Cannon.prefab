@@ -167,9 +167,9 @@ Transform:
   m_Children:
   - {fileID: 2913151512637206618}
   - {fileID: 4286902390059865527}
+  - {fileID: 1015118276426126716}
   - {fileID: 8146950112558025562}
   - {fileID: 290672813069935013}
-  - {fileID: 1015118276426126716}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8938978354631210550
@@ -184,11 +184,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2775e4621f24ac4182c9a03ab19784d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
-  AttackDamage: 2
+  AttackDamage: 0.1
   SpecialDamage: 0
   TrueDamage: 0
   FireRate: 0.5
-  PlacementDelay: 0
+  PlacementDelay: 1
   MinRange: 0
   MaxRange: 6
   targetLayer:
@@ -208,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cannon
   Megumin: {fileID: 5257680329798234451}
-  explosionSize: 2
+  baseExplosionRadius: 2
   ball: {fileID: 4850947257422530243, guid: 5fd18392c3eebed4a887c4fe255f0fff, type: 3}
   cannonBallSpawnLocation: {fileID: 290672813069935013}
 --- !u!65 &7385217682132657560
