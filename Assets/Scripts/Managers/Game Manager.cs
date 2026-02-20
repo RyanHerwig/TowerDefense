@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
     private Queue<Enemy> enemyRemoveQueue;
     private Queue<TowerEffectData> towerEffectQueue;
     private Queue<EnemyEffectData> enemyEffectQueue;
+    private Queue<EnemyEffectData> enemyRemoveEffectQueue;
     [NonSerialized] public List<Tower> towersInGame;
 
     AmmoManager ammoManager;
@@ -119,7 +120,7 @@ public class GameManager : MonoBehaviour
                     EnemyEffectData currentEffectData = enemyEffectQueue.Dequeue();
 
                     // Attempts to get effect with exact same properties
-                    EnemyEffect effectDuplicate = currentEffectData.Target.ActiveEffects.Find(x => x.Name == currentEffectData.Effect.Name 
+                    EnemyEffect effectDuplicate = currentEffectData.Target.ActiveEffects.Find(x => x.Name == currentEffectData.Effect.Name
                             && x.Id == currentEffectData.Effect.Id);
                     if (effectDuplicate == null)
                     {
@@ -135,6 +136,30 @@ public class GameManager : MonoBehaviour
             }
 
             // Removes Buffs
+            if (enemyRemoveEffectQueue.Count > 0)
+            {
+                int enemyBuffRemoveSize = enemyRemoveEffectQueue.Count;
+                for (int i = 0; i < enemyBuffRemoveSize; i++)
+                {
+                    EnemyEffectData currentEffectData = enemyRemoveEffectQueue.Dequeue();
+
+                    Enemy target = currentEffectData.Target;
+
+                    //Finds an identical buff and removes it
+                    //for (int j = 0; j < target.activeBuffs.Count; j++)
+                    //{
+                    //    if (target.activeBuffs[j].buffName == currentEffectData.buffToApply.buffName
+                    //        && target.activeBuffs[j].modifier == currentEffectData.buffToApply.modifier
+                    //        && target.activeBuffs[j].duration == currentEffectData.buffToApply.duration)
+                    //    {
+                    //        target.activeBuffs.RemoveAt(j);
+                    //        currentEffectData.enemyToAffect.ApplyBuffs();
+                    //        break;
+                    //    }
+                    //}
+                }
+            }
+
 
             // Tick Enemies
             foreach (Enemy enemy in enemyManager.spawnedEnemies)
@@ -158,7 +183,7 @@ public class GameManager : MonoBehaviour
                     Enemy damagedEnemy = currentDamageData.TargetEnemy;
 
                     // Enemy Takes Physical Damage
-                    if (currentDamageData.AttackDamage > 0 && !damagedEnemy.ImmuneToPhysical)
+                    if (currentDamageData.AttackDamage > 0 && !damagedEnemy.CheckImmunities(Immunities.Physical))
                     {
                         if (damagedEnemy.Defense >= 0)
                         {
@@ -175,7 +200,7 @@ public class GameManager : MonoBehaviour
                     }
 
                     // Enemy Takes Special Damage (if it isn't already dead)
-                    if (damagedEnemy.Health > 0 && currentDamageData.SpecialDamage > 0 && !damagedEnemy.ImmuneToSpecial)
+                    if (damagedEnemy.Health > 0 && currentDamageData.SpecialDamage > 0 && !damagedEnemy.CheckImmunities(Immunities.Special))
                     {
                         if (damagedEnemy.Resistance >= 0)
                         {
@@ -225,9 +250,14 @@ public class GameManager : MonoBehaviour
         towerEffectQueue.Enqueue(effectData);
     }
 
-    public void EnqueueEnemyEffects(EnemyEffectData effectData)
+    public void EnqueueAddEnemyEffects(EnemyEffectData effectData)
     {
         enemyEffectQueue.Enqueue(effectData);
+    }
+
+    public void EnqueueRemoveEnemyEffects(EnemyEffectData effectData)
+    {
+        enemyRemoveEffectQueue.Enqueue(effectData);
     }
 
     public void EnqueueDamageData(DamageData damageData)
@@ -272,6 +302,7 @@ public class GameManager : MonoBehaviour
         enemyRemoveQueue = new Queue<Enemy>();
         towerEffectQueue = new Queue<TowerEffectData>();
         enemyEffectQueue = new Queue<EnemyEffectData>();
+        enemyRemoveEffectQueue = new Queue<EnemyEffectData>();
         isWaveActive = false;
 
         towersInGame = new();

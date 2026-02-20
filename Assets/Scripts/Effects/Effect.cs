@@ -33,6 +33,4 @@ public abstract class Effect
     /// Bool for if the effect is flat or percentage based
     /// </summary>
     public bool IsPercentBased;
-
-    public GameObject Origin;
 }

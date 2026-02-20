@@ -9,13 +9,12 @@ public class TowerEffect : Effect
     public float FireRate;
     private int percentIntIdentifier;
     public float Id;
-    public TowerEffect(TowerEffectName name, bool isBuff, float duration, GameObject origin, float attackDamage = 0, float specialDamage = 0,
+    public TowerEffect(TowerEffectName name, bool isBuff, float duration, float attackDamage = 0, float specialDamage = 0,
         float trueDamage = 0, float fireRate = 0, bool isPermanent = false, bool isDispellable = true, bool isPercentBased = false)
     {
         Name = name;
         IsBuff = isBuff;
         Duration = duration;
-        Origin = origin;
         AttackDamage = attackDamage;
         SpecialDamage = specialDamage;
         TrueDamage = trueDamage;

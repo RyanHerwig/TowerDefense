@@ -20,6 +20,9 @@ public class Tower : MonoBehaviour, IPointerClickHandler
     [Tooltip("The time it takes for the tower to start attacking after being placed")]
     public float PlacementDelay;
 
+    [Tooltip("The elemental type the tower's attacks will inflict")]
+    public ElementType elementType;
+
     [Header("Range Stats")]
     [Tooltip("The minimum range an enemy can be to be targetted")]
     public float MinRange;
@@ -94,4 +97,13 @@ public class Tower : MonoBehaviour, IPointerClickHandler
         else
             mesh.ToggleTowerRange();
     }
+}
+
+public enum ElementType
+{
+    None,
+    Fire,
+    Ice,
+    Water,
+    Electric
 }

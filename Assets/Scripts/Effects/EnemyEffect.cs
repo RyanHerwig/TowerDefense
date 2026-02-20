@@ -22,11 +22,10 @@ public class EnemyEffect : Effect
     public float Id;
     private int percentIntIdentifier;
 
-    public EnemyEffect(EnemyEffectName name, bool isBuff, float duration, GameObject origin, float attackDamage = 0, float specialDamage = 0,
+    public EnemyEffect(EnemyEffectName name, bool isBuff, float duration, float attackDamage = 0, float specialDamage = 0,
         float trueDamage = 0, float shred = 0, bool isPermanent = false, bool isDispellable = true, float effectRate = 0, bool isPercentBased = false)
     {
         Name = name;
-        Origin = origin;
         IsBuff = isBuff;
         AttackDamage = attackDamage;
         SpecialDamage = specialDamage;
@@ -40,6 +39,21 @@ public class EnemyEffect : Effect
         IsPercentBased = isPercentBased;
         percentIntIdentifier = IsPercentBased ? 1 : 2;
         Id = (Shred * 100000) + (AttackDamage * 100) + SpecialDamage + (TrueDamage / 100) + (percentIntIdentifier / 1000);
+    }
+
+    public static bool operator ==(EnemyEffect a, EnemyEffect b)
+    {
+        return
+            a.Name == b.Name
+        &&  a.Shred == b.Shred
+        &&  a.SpecialDamage == b.SpecialDamage
+        &&  a.TrueDamage == b.TrueDamage
+        &&  a.IsPercentBased == b.IsPercentBased;
+    }
+
+    public static bool operator !=(EnemyEffect a, EnemyEffect b)
+    {
+        return !(a == b);
     }
 }
 
@@ -55,13 +69,33 @@ public struct EnemyEffectData
     }
 }
 
+public class ComboEffect
+{
+    public ComboEffectName ComboEffectName;
+    public float Duration;
+
+    public ComboEffect(ComboEffectName effectName, float duration)
+    {
+        ComboEffectName = effectName;
+        Duration = duration;
+    }
+}
+
+public struct ComboEffectData
+{
+    public ComboEffect ComboEffect;
+    public Enemy Target;
+
+    public ComboEffectData(ComboEffect comboEffect, Enemy target)
+    {
+        ComboEffect = comboEffect;
+        Target = target;
+    }
+}
+
 public enum EnemyEffectName
 {
     // *** TOWER DEBUFF EFFECTS ***
-    Fire, // Damage Over Time
-    Ice, // Debuffs
-    Water, // Crowd Control
-    Electric, // Damage
     Burning
 
     // *** ENEMY BUFF EFFECTS ***
@@ -69,6 +103,14 @@ public enum EnemyEffectName
 
 public enum ComboEffectName
 {
+    // BASE EFFECTS - Does little (if anything)
+    Fire, // Damage Over Time
+    Ice, // Debuffs
+    Water, // Crowd Control
+    Electric, // Damage
+
+    // COMBO EFFECTS
+
     Scorched, // Fire + Fire - Deals DoT
     Melt, // Fire + Ice - Shreds Armor and Resistance
     Vaporize, // Fire + Water - Deals damage and knocks back enemy

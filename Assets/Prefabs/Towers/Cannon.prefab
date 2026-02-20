@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2775e4621f24ac4182c9a03ab19784d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
-  AttackDamage: 0.1
+  AttackDamage: 10
   SpecialDamage: 0
   TrueDamage: 0
   FireRate: 0.5

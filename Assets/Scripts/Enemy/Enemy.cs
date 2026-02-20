@@ -20,11 +20,8 @@ public class Enemy : MonoBehaviour
     public float Resistance;
 
     [Header("Immunities")]
-    [Tooltip("Check if enemy takes 0 damage from physical attacks")]
-    public bool ImmuneToPhysical;
-
-    [Tooltip("Check if enemy takes 0 damage from special attacks")]
-    public bool ImmuneToSpecial;
+    [Tooltip("List of possible immunities. Check each item that enemy is immune to")]
+    [SerializeField] Immunities allImmunities;
 
     /// <summary>
     /// All Effects that are currently on the Enemy, including duplicates
@@ -42,6 +39,8 @@ public class Enemy : MonoBehaviour
     [NonSerialized] public EnemyType Id;
     [NonSerialized] public Transform body;
 
+    Dictionary<EnemyEffectName, List<EnemyEffectData>> enemyEffectDict;
+
     GameManager gameManager;
     public void Init()
     {
@@ -51,6 +50,7 @@ public class Enemy : MonoBehaviour
         transform.position = GameManager.Instance.enemySpawnNode;
         ActiveEffects = new();
         AppliedEffects = new();
+        enemyEffectDict = new();
         body = transform;
         isAlive = true;
     }
@@ -72,7 +72,7 @@ public class Enemy : MonoBehaviour
                         }
                         else
                         {
-                            gameManager.EnqueueDamageData(new DamageData(this, ActiveEffects[i].AttackDamage, 
+                            gameManager.EnqueueDamageData(new DamageData(this, ActiveEffects[i].AttackDamage,
                                 ActiveEffects[i].SpecialDamage, ActiveEffects[i].TrueDamage, Defense, Resistance));
                             ActiveEffects[i].EffectDelay = 1f / ActiveEffects[i].EffectRate;
                         }
@@ -84,4 +84,28 @@ public class Enemy : MonoBehaviour
 
         ActiveEffects.RemoveAll(x => x.Duration < 0);
     }
+
+    public void ApplyEffects()
+    {
+        
+    }
+
+    /// <summary>
+    /// Checks if Enemy is Immune to specified effect or damage type
+    /// </summary>
+    /// <param name="immunities">The effect or damage type to check</param>
+    /// <returns>Returns True if enemy is immune; if enemy is not immune, returns false</returns>
+    public bool CheckImmunities(Immunities immunities)
+    {
+        return (allImmunities & immunities) != 0;
+    }
+}
+
+[Flags]
+public enum Immunities
+{
+    Nothing = 1,
+    Physical = 2,
+    Special = 4,
+    Fire = 8,
 }

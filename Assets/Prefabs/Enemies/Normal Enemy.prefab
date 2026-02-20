@@ -51,8 +51,7 @@ MonoBehaviour:
   Speed: 3
   Defense: 0
   Resistance: 0
-  ImmuneToPhysical: 0
-  ImmuneToSpecial: 0
+  allImmunities: 0
 --- !u!65 &6814367594731101615
 BoxCollider:
   m_ObjectHideFlags: 0
