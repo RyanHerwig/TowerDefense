@@ -251,10 +251,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
   AttackDamage: 0
-  SpecialDamage: 0.5
+  SpecialDamage: 0.1
   TrueDamage: 0
-  FireRate: 5
+  FireRate: 1
   PlacementDelay: 0
+  elementType: 0
   MinRange: 0
   MaxRange: 4
   targetLayer:
@@ -273,6 +274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9549d77eb7f5a1942bb404a5dac36bc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Flamethrower
+  Duration: 3
   fireTrigger: {fileID: 1347520042737047088}
   fireEffect: {fileID: 8769985294167181208}
 --- !u!65 &155725916271892720

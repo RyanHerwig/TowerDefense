@@ -43,6 +43,8 @@ public class WaveManager : MonoBehaviour
         }
     }
 
+    // Caching Coroutine return to remove garbage
+    readonly WaitForFixedUpdate WaitForFixedUpdate = new();
     IEnumerator Wave()
     {
         // Get Wave
@@ -87,7 +89,7 @@ public class WaveManager : MonoBehaviour
                     }
                 }
             }
-            yield return new WaitForFixedUpdate();
+            yield return WaitForFixedUpdate;
         }
     }
 }

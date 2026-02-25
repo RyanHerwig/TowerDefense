@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Flamethrower : TowerDamage
 {
+    public float Duration;
     [SerializeField] private Collider fireTrigger;
     [SerializeField] private ParticleSystem fireEffect;
     [NonSerialized] public float damage;

@@ -6,15 +6,17 @@ public class CannonBall : Ammo
     ParticleSystem Megumin;
     float explosionRadius;
 
+    // Caching Coroutine return to remove garbage
+    readonly WaitForFixedUpdate WaitForFixedUpdate = new();
     public override IEnumerator Fire()
     {
-        Megumin = ((Cannon) towerOrigin).Megumin;
+        Megumin = ((Cannon)towerOrigin).Megumin;
         explosionRadius = ((Cannon)towerOrigin).ExplosionRadius;
         while (timer <= 2)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetTransform.position, Speed);
             timer += Time.deltaTime;
-            yield return new WaitForFixedUpdate();
+            yield return WaitForFixedUpdate;
         }
         timer = 0;
 
@@ -36,7 +38,7 @@ public class CannonBall : Ammo
             for (int j = 0; j < enemiesInRadiusCount; j++)
             {
                 Enemy enemyToDamage = enemyManager.enemyTransformDict[enemiesInRadius[j].transform];
-                DamageData damageToApply = new DamageData(enemyToDamage, AttackDamage, SpecialDamage, TrueDamage, target.Defense, target.Resistance);
+                DamageData damageToApply = new DamageData(enemyToDamage, AttackDamage, SpecialDamage, TrueDamage, target.Defense, target.SpecialDefense);
                 gameManager.EnqueueDamageData(damageToApply);
             }
 

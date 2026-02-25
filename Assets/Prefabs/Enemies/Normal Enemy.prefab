@@ -49,9 +49,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   maxHealth: 3
   Speed: 3
+  BaseElementCooldown: 10
   Defense: 0
-  Resistance: 0
+  SpecialDefense: 0
   allImmunities: 0
+  Health: 0
+  ElementName: 0
 --- !u!65 &6814367594731101615
 BoxCollider:
   m_ObjectHideFlags: 0

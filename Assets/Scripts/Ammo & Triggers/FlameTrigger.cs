@@ -16,10 +16,14 @@ public class FireTriggerCollisionDetector : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            EnemyEffect onFire = new(EnemyEffectName.Burning, false, 10f, attackDamage: parent.AttackDamage, 
-                specialDamage: parent.SpecialDamage, trueDamage: parent.TrueDamage, effectRate: parent.FireRate);
-            EnemyEffectData effectData = new(onFire, enemyManager.enemyTransformDict[other.transform]);
+            Enemy enemy = enemyManager.enemyTransformDict[other.transform];
+            BurnEffect burn = new(parent.SpecialDamage, parent.Duration, parent.FireRate);
+            EnemyEffectData effectData = new(burn, enemy);
             gameManager.EnqueueAddEnemyEffects(effectData);
+
+            ElementEffect fire = new(ElementName.Fire, 3f);
+            ElementEffectData elementData = new(fire, enemy, parent);
+            gameManager.EnqueueAddElement(elementData);
         }
     }
 }

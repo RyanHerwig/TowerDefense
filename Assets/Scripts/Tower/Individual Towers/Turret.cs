@@ -15,7 +15,7 @@ public class Turret : TowerDamage
             }
 
             // If attack is off cooldown, attack and put attack on cooldown again.
-            gameManager.EnqueueDamageData(new DamageData(target, AttackDamage, SpecialDamage, TrueDamage, target.Defense, target.Resistance));
+            gameManager.EnqueueDamageData(new DamageData(target, AttackDamage, SpecialDamage, TrueDamage, target.Defense, target.SpecialDefense));
 
             delay = 1 / FireRate;
         }
