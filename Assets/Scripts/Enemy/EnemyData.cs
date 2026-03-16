@@ -11,5 +11,9 @@ public enum EnemyType
 {
     Basic = 1,
     Fast = 2,
-    Slow = 3
+    Slow = 3,
+    NullPhysical = 4,
+    NullPhysicalBuffer = 5,
+    NullSpecial = 6,
+    NullSpecialBuffer = 7
 }

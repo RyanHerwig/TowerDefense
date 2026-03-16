@@ -251,7 +251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tower
   AttackDamage: 0
-  SpecialDamage: 0.1
+  SpecialDamage: 0.25
   TrueDamage: 0
   FireRate: 1
   PlacementDelay: 0

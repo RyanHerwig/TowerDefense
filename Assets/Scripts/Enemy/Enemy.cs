@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq.Expressions;
 
-public class Enemy : MonoBehaviour
+public abstract class Enemy : MonoBehaviour
 {
     [Header("Basic Stats")]
 
@@ -25,7 +26,10 @@ public class Enemy : MonoBehaviour
 
     [Header("Immunities")]
     [Tooltip("List of possible immunities. Check each item that enemy is immune to")]
-    [SerializeField] Immunities allImmunities;
+    [SerializeField] Immunities baseImmunities;
+    [NonSerialized] public Immunities AllImmunities;
+
+    [Header("Debug Info")]
 
     /// <summary>
     /// All Effects that are currently on the Enemy, including duplicates
@@ -44,7 +48,7 @@ public class Enemy : MonoBehaviour
     GameManager gameManager;
     ElementManager elementManager;
     bool isActivateElementTimerRunning;
-    public void Init()
+    public virtual void Init()
     {
         gameManager = GameManager.Instance;
         elementManager = ElementManager.Instance;
@@ -58,6 +62,7 @@ public class Enemy : MonoBehaviour
         ElementOrigin = null;
         CurrentElementCooldown = 0;
         isAlive = true;
+        AllImmunities = baseImmunities;
 
         isActivateElementTimerRunning = false;
     }
@@ -132,6 +137,7 @@ public class Enemy : MonoBehaviour
         yield return null;
     }
 
+    #region Immunity Bitwise Functions
     /// <summary>
     /// Checks if Enemy is Immune to specified effect or damage type
     /// </summary>
@@ -139,13 +145,46 @@ public class Enemy : MonoBehaviour
     /// <returns>Returns True if enemy is immune; if enemy is not immune, returns false</returns>
     public bool CheckImmunities(Immunities immunities)
     {
-        return (allImmunities & immunities) != 0;
+        return AllImmunities.HasFlag(immunities);
     }
+
+    /// <summary>
+    /// Adds or Removes specified enum values from list of immunities. If state is already true per immunity, does nothing for specified immunity.
+    /// </summary>
+    /// <param name="flag">The specified immunities to add or remove from immunity list</param>
+    /// <param name="state">Set to True to add immunity to list. Set to False to remove immunity from list</param>
+    public void SetImmunities(Immunities flag, bool state)
+    {
+        uint currentImmunities = Convert.ToUInt32(AllImmunities);
+        uint newImmunities = Convert.ToUInt32(flag);
+        uint result = state ? currentImmunities | newImmunities : currentImmunities & ~newImmunities;
+
+        AllImmunities = (Immunities) Convert.ChangeType(result, Enum.GetUnderlyingType(typeof(Immunities)));
+    }
+
+    /// <summary>
+    /// Resets all immunities to starting value
+    /// </summary>
+    public void ResetImmunities()
+    {
+        AllImmunities = baseImmunities;
+    }
+
+    /// <summary>
+    /// Removes All Immunities (including starting immunities) from enemy
+    /// This function is typically called if debuff that strips immunities from enemy is applied
+    /// </summary>
+    public void RemoveAllImmunities()
+    {
+        AllImmunities = Immunities.Nothing;
+    }
+    #endregion
 }
 
 [Flags]
 public enum Immunities
 {
+    // Values Must Be Explicitly Stated and in Powers of Two (for Bitwise Operations)
     Nothing = 1,
     Physical = 2,
     Special = 4,

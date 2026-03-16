@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3070882702396064621}
-  - component: {fileID: 3363030165225241489}
+  - component: {fileID: 4244611338175499045}
   - component: {fileID: 6814367594731101615}
   - component: {fileID: 1570265487137557392}
   m_Layer: 7
@@ -35,7 +35,7 @@ Transform:
   - {fileID: 7678105306767420793}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3363030165225241489
+--- !u!114 &4244611338175499045
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,15 +44,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 5449097528153191611}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1269a1d28dab6314aa997dd3dd5dc8fa, type: 3}
+  m_Script: {fileID: 11500000, guid: ebbf512755d3f4242ae50a17bcedf093, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  m_EditorClassIdentifier: Assembly-CSharp::NormalEnemy
   maxHealth: 3
   Speed: 3
   BaseElementCooldown: 10
   Defense: 0
   SpecialDefense: 0
-  allImmunities: 0
+  AllImmunities: 10
   Health: 0
   ElementName: 0
 --- !u!65 &6814367594731101615
