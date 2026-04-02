@@ -75,4 +75,19 @@ public class BurnEffect : IEnemyEffect
     {
         SpecialDamage = specialDamage;
     }
+
+    public bool GetIsPermanent()
+    {
+        return true;
+    }
+
+    public bool GetIsDispellable()
+    {
+        return true;
+    }
+
+    public bool GetIsBuff()
+    {
+        return false;
+    }
 }

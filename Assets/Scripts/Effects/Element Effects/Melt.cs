@@ -56,4 +56,19 @@ public class Melt : IEnemyEffect
         SpecialDamage = specialDamage;
         TrueDamage = trueDamage;
     }
+
+    public bool GetIsPermanent()
+    {
+        return false;
+    }
+
+    public bool GetIsDispellable()
+    {
+        return true;
+    }
+
+    public bool GetIsBuff()
+    {
+        return false;
+    }
 }

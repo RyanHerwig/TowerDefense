@@ -27,15 +27,15 @@ public class WaveData
             new(
                 enemyId: new EnemyType[] {EnemyType.NullPhysicalBuffer, EnemyType.Fast, EnemyType.Basic},
                 count: new int[] {1, 1, 1},
-                delay: new float[] {.2f, 0, 0},
-                interval: new float[] {1.5f, 0, 0}),
+                delay: new float[] {.5f, 0, 2},
+                interval: new float[] {0, 0, 0}),
             #endregion
 
             #region Second Wave
             new(
                 enemyId: new EnemyType[] {EnemyType.Basic, EnemyType.Fast, EnemyType.NullPhysicalBuffer},
                 count: new int[] {5, 10, 1},
-                delay: new float[] {0, 0.5f, 2},
+                delay: new float[] {1f, 0.2f, 0.5f},
                 interval: new float[] {2, 0.5f, 0}),
 
             #endregion

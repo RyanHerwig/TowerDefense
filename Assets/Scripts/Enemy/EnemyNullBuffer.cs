@@ -9,15 +9,15 @@ public class EnemyNullBuffer : Enemy
     [SerializeField] float auraRadius;
     [SerializeField] Immunities nullBuffs;
     [SerializeField] LayerMask AuraEffectLayer;
-
     EnemyManager enemyManager;
-    List<Enemy> effectedEnemies;
+    List<EnemyEffectData> allEnemeyEffectData;
     public override void Init()
     {
         base.Init();
 
+        gameManager = GameManager.Instance;
         enemyManager = EnemyManager.Instance;
-        effectedEnemies = new();
+        allEnemeyEffectData = new();
 
         ApplyBuff();
     }
@@ -33,21 +33,34 @@ public class EnemyNullBuffer : Enemy
         for (int j = 0; j < enemiesInRadiusCount; j++)
         {
             Enemy target = enemyManager.enemyTransformDict[enemiesInAura[j].transform];
-            if (!target.CheckImmunities(nullBuffs))
-                target.SetImmunities(nullBuffs, true);
+
+            NullEffect nullPhysicalEffect = new();
+            EnemyEffectData enemyEffectData = new(nullPhysicalEffect, target);
+            allEnemeyEffectData.Add(enemyEffectData);
+            gameManager.EnqueueAddEnemyEffects(enemyEffectData);
         }
     }
 
     public void OnTriggerEnter(Collider other)
     {
         Enemy target = other.GetComponent<Enemy>();
-        target.SetImmunities(nullBuffs, true);
+
+        if (CheckNullBuff(Immunities.Physical))
+        {
+            NullEffect nullPhysicalEffect = new();
+            EnemyEffectData enemyEffectData = new(nullPhysicalEffect, target);
+            allEnemeyEffectData.Add(enemyEffectData);
+            gameManager.EnqueueAddEnemyEffects(enemyEffectData);
+        }
     }
 
     public void OnTriggerExit(Collider other)
     {
+        //WARNING - Will Error if Enemy Spawns within Range of Buff / Debuff
         Enemy target = other.GetComponent<Enemy>();
-        target.SetImmunities(nullBuffs, false);
+        EnemyEffectData data = allEnemeyEffectData.Find(x => x.Target == target);
+        gameManager.EnqueueRemoveEnemyEffects(data);
+        allEnemeyEffectData.Remove(data);
     }
 
     /// <summary>

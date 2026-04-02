@@ -56,4 +56,19 @@ public class Soaked : IEnemyEffect
         SpecialDamage = specialDamage;
         TrueDamage = trueDamage;
     }
+
+    public bool GetIsPermanent()
+    {
+        return false;
+    }
+
+    public bool GetIsDispellable()
+    {
+        return false;
+    }
+
+    public bool GetIsBuff()
+    {
+        return false;
+    }
 }

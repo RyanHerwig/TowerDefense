@@ -48,7 +48,8 @@ public enum EnemyEffectName
     Burning,
 
     // *** ENEMY BUFF EFFECTS ***
-
+    NullPhysical,
+    NullSpecial,
     // *** COMBO EFFECTS ***
     Scorched, // Fire + Fire - Deals DoT
     Melt, // Fire + Ice - Shreds Armor and Resistance

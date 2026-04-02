@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq.Expressions;
 
 public abstract class Enemy : MonoBehaviour
 {
@@ -45,7 +44,7 @@ public abstract class Enemy : MonoBehaviour
     [NonSerialized] public TowerDamage ElementOrigin;
     [NonSerialized] public float CurrentElementCooldown;
 
-    GameManager gameManager;
+    protected GameManager gameManager;
     ElementManager elementManager;
     bool isActivateElementTimerRunning;
     public virtual void Init()
@@ -63,7 +62,6 @@ public abstract class Enemy : MonoBehaviour
         CurrentElementCooldown = 0;
         isAlive = true;
         AllImmunities = baseImmunities;
-
         isActivateElementTimerRunning = false;
     }
 
