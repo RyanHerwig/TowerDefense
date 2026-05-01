@@ -25,27 +25,30 @@ public class WaveData
         {
             #region First Wave
             new(
-                enemyId: new EnemyType[] {EnemyType.NullPhysicalBuffer, EnemyType.Fast, EnemyType.Basic},
-                count: new int[] {1, 1, 1},
-                delay: new float[] {.5f, 0, 2},
-                interval: new float[] {0, 0, 0}),
+                enemyId: new EnemyType[] {EnemyType.Basic},
+                count: new int[] {10},
+                delay: new float[] {0},
+                interval: new float[] {2},
+                waveBonus: 100),
             #endregion
 
             #region Second Wave
             new(
-                enemyId: new EnemyType[] {EnemyType.Basic, EnemyType.Fast, EnemyType.NullPhysicalBuffer},
+                enemyId: new EnemyType[] {EnemyType.Basic, EnemyType.Fast},
                 count: new int[] {5, 10, 1},
-                delay: new float[] {1f, 0.2f, 0.5f},
-                interval: new float[] {2, 0.5f, 0}),
+                delay: new float[] {1f, 0.2f},
+                interval: new float[] {2, 0.5f},
+                waveBonus: 150),
 
             #endregion
 
             #region Third Wave
             new (
                 enemyId: new EnemyType[] {EnemyType.Slow},
-                count: new int[] {1},
+                count: new int[] {3},
                 delay: new float[] {0},
-                interval: new float[] {0})
+                interval: new float[] {5},
+                waveBonus: 200)
             #endregion
         };
         #endregion
@@ -89,9 +92,18 @@ public struct Wave
     /// </summary>
     public readonly float WaveLength;
 
-    public Wave(EnemyType[] enemyId, int[] count, float[] delay, float[] interval)
+    /// <summary>
+    /// The total amount of Enemies to be spawned in the current wave
+    /// </summary>
+    public readonly int TotalAmountOfEnemies;
+
+    public readonly int WaveBonus;
+
+    public Wave(EnemyType[] enemyId, int[] count, float[] delay, float[] interval, int waveBonus)
     {
         WaveLength = 0;
+
+        // Data Validation. All Parameters ( regrding enemies ) must be equal in Length
         if (enemyId.Length != count.Length && count.Length != delay.Length && delay.Length != interval.Length)
         {
             Debug.LogError("INVALID WAVE");
@@ -100,6 +112,8 @@ public struct Wave
             CountOfEachEnemy = new int[] { };
             Delay = new float[] { };
             Interval = new float[] { };
+            WaveBonus = 0;
+            TotalAmountOfEnemies = 0;
             WaveSize = 0;
         }
         else
@@ -109,12 +123,15 @@ public struct Wave
             Delay = delay;
             Interval = interval;
             WaveSize = enemyId.Length;
+            TotalAmountOfEnemies = 0;
+            WaveBonus = waveBonus;
 
             // Gets Wave Length
             // Gets time between each enemy, then adds the delay to it
             for (int i = 0; i < WaveSize; i++)
             {
                 int tempCount = CountOfEachEnemy[i] - 1;
+                TotalAmountOfEnemies += tempCount + 1;
                 float tempInterval = Interval[i];
 
                 if (tempCount == 0)

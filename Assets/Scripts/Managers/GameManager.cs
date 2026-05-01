@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
 
     public bool isWaveActive;
     private int gameLoopQueueCount;
+    TowerPlacement player;
 
     void Start()
     {
@@ -99,7 +100,11 @@ public class GameManager : MonoBehaviour
                 // If so, lose life
                 if (currentEnemy.NodeIndex == nodePositions.Length)
                 {
+                    player.UpdateHealth((int) -currentEnemy.Health);
                     EnqueueRemoveEnemy(currentEnemy);
+
+                    if (player.Health <= 0)
+                        runGame = false;
                 }
             }
 
@@ -273,7 +278,9 @@ public class GameManager : MonoBehaviour
                 gameLoopQueueCount = enemyRemoveQueue.Count;
                 for (int i = 0; i < gameLoopQueueCount; i++)
                 {
-                    enemyManager.RemoveEnemy(enemyRemoveQueue.Dequeue());
+                    Enemy tempEnemy = enemyRemoveQueue.Dequeue();
+                    player.UpdateMoney(tempEnemy.moneyDrop);
+                    enemyManager.RemoveEnemy(tempEnemy);
                 }
             }
 
@@ -325,6 +332,7 @@ public class GameManager : MonoBehaviour
 
     private void InitVariables()
     {
+        player = TowerPlacement.Instance;
         enemyManager = EnemyManager.Instance;
         enemyManager.Init();
 

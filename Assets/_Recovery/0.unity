@@ -2752,7 +2752,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TowerPlacement
   startingHealth: 100
-  startingMoney: 2000
+  startingMoney: 250
   placementLayers:
     serializedVersion: 2
     m_Bits: 959

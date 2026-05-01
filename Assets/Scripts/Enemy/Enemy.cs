@@ -13,6 +13,9 @@ public abstract class Enemy : MonoBehaviour
     [Tooltip("How fast the enemy moves")]
     public float Speed;
 
+    [Tooltip("The amount of money the enemy gives upon death")]
+    public float moneyDrop;
+
     [Tooltip("The minimum time interval between two elemental combos")]
     public float BaseElementCooldown;
 

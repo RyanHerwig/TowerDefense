@@ -258,6 +258,7 @@ MonoBehaviour:
   elementType: 0
   MinRange: 0
   MaxRange: 4
+  cost: 150
   targetLayer:
     serializedVersion: 2
     m_Bits: 128

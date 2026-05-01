@@ -18,6 +18,7 @@ public class EnemyManager : MonoBehaviour
     #endregion
 
     GameManager gameManager;
+    WaveManager waveManager;
     public List<Enemy> spawnedEnemies;
     public List<Transform> spawnedEnemiesTransform;
     public Dictionary<EnemyType, GameObject> enemyPrefabs;
@@ -25,16 +26,18 @@ public class EnemyManager : MonoBehaviour
 
     public Dictionary<Transform, Enemy> enemyTransformDict;
     [SerializeField] Transform enemyFolder;
+
+    private int enemiesDefeatedThisWWave;
     public void Init()
     {
-
         gameManager = GameManager.Instance;
+        waveManager = WaveManager.Instance;
         spawnedEnemies = new();
         spawnedEnemiesTransform = new();
         enemyPrefabs = new();
         enemyObjectPools = new();
         enemyTransformDict = new();
-
+        enemiesDefeatedThisWWave = 0;
 
         // Loads Enemy Data on runtime
         EnemyData[] enemies = Resources.LoadAll<EnemyData>("Enemy");
@@ -90,6 +93,7 @@ public class EnemyManager : MonoBehaviour
 
     public void RemoveEnemy(Enemy enemy)
     {
+        enemiesDefeatedThisWWave++;
         enemyObjectPools[enemy.Id].Enqueue(enemy);
         enemy.gameObject.SetActive(false);
         enemy.isAlive = false;
@@ -97,9 +101,11 @@ public class EnemyManager : MonoBehaviour
         spawnedEnemiesTransform.Remove(enemy.transform);
         enemyTransformDict.Remove(enemy.transform);
 
-        if (spawnedEnemies.Count == 0)
+        if (spawnedEnemies.Count == 0 && enemiesDefeatedThisWWave >= waveManager.GetWaveData().TotalAmountOfEnemies)
         {
             gameManager.isWaveActive = false;
+            waveManager.GiveWaveBonus();
+            enemiesDefeatedThisWWave = 0;
         }
     }
 }

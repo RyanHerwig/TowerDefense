@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [Space]
     [SerializeField] private float speed;
     [SerializeField] private float sensitivity;
-
+    
     void Update()
     {
         movementInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));

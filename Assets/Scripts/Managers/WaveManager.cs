@@ -19,6 +19,7 @@ public class WaveManager : MonoBehaviour
     #endregion
     GameManager gameManager;
     WaveData waveData;
+    TowerPlacement player;
     int currentWave;
     int totalNumberOfWaves;
 
@@ -27,6 +28,7 @@ public class WaveManager : MonoBehaviour
     {
         gameManager = GameManager.Instance;
         waveData = new WaveData();
+        player = TowerPlacement.Instance;
         waveData.Init();
         waves = waveData.GetWave();
         totalNumberOfWaves = waves.Length;
@@ -43,6 +45,16 @@ public class WaveManager : MonoBehaviour
         }
     }
 
+    public Wave GetWaveData()
+    {
+        return waves[currentWave];
+    }
+
+    public void GiveWaveBonus()
+    {
+        player.UpdateMoney(waves[currentWave].WaveBonus);
+    }
+
     // Caching Coroutine return to remove garbage
     readonly WaitForFixedUpdate WaitForFixedUpdate = new();
     IEnumerator Wave()
@@ -57,7 +69,7 @@ public class WaveManager : MonoBehaviour
         float[] waveTimer = new float[waveSize];
         float waveLength = wave.WaveLength;
         float time = 0;
-        float deltaTime = 0;
+        float deltaTime;
 
         // Init wave variables
         int[] waveCount = new int[waveSize];

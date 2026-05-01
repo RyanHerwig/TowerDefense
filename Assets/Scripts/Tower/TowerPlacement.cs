@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class TowerPlacement : MonoBehaviour
@@ -16,6 +17,11 @@ public class TowerPlacement : MonoBehaviour
     }
     #endregion
     GameObject currentTower;
+    [SerializeField] private int startingHealth;
+    [NonSerialized] public int Health;
+
+    [SerializeField] private int startingMoney;
+    [NonSerialized] public float Money;
     [SerializeField] LayerMask placementLayers;
     [SerializeField] LayerMask towerCollide;
     [SerializeField] Camera cam;
@@ -23,11 +29,17 @@ public class TowerPlacement : MonoBehaviour
 
     GameManager gameManager;
     bool canPlace;
+    UIManager uIManager;
 
     void Start()
     {
-        canPlace = true;
         gameManager = GameManager.Instance;
+        uIManager = UIManager.Instance;
+        Health = startingHealth;
+        Money = startingMoney;
+        canPlace = true;
+        uIManager.UpdateHealth(Health);
+        uIManager.UpdateMoney(Money);
     }
 
     void Update()
@@ -68,9 +80,26 @@ public class TowerPlacement : MonoBehaviour
         }
     }
 
-    public void PlaceTower(GameObject tower)
+    public void PlaceTower(Tower tower)
     {
-        currentTower = Instantiate(tower, Vector3.zero, Quaternion.identity, towerFolder);
+        float cost = tower.cost;
+        if (Money >= cost)
+        {
+            currentTower = Instantiate(tower.gameObject, Vector3.zero, Quaternion.identity, towerFolder);
+            UpdateMoney(-cost);
+        }
+    }
+
+    public void UpdateMoney(float moneyToAdd)
+    {
+        Money += moneyToAdd;
+        uIManager.UpdateMoney(Money);
+    }
+
+    public void UpdateHealth(int healthToAdd)
+    {
+        Health += healthToAdd;
+        uIManager.UpdateHealth(Health);
     }
 
     public void CancelTower()

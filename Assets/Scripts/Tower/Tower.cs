@@ -30,6 +30,8 @@ public class Tower : MonoBehaviour, IPointerClickHandler
     public float MaxRange;
 
     [Header("Tower Functionality")]
+    [Tooltip("The amount of money it costs to place the tower")]
+    public float cost;
     [Tooltip("The layer that this tower affects")]
     public LayerMask targetLayer;
 

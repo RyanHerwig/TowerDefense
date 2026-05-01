@@ -189,8 +189,10 @@ MonoBehaviour:
   TrueDamage: 0
   FireRate: 0.5
   PlacementDelay: 1
+  elementType: 0
   MinRange: 0
   MaxRange: 6
+  cost: 200
   targetLayer:
     serializedVersion: 2
     m_Bits: 128
