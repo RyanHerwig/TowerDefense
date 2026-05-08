@@ -45,6 +45,16 @@ public class WaveManager : MonoBehaviour
         }
     }
 
+    public int GetTotalWaves()
+    {
+        return waves.Length;
+    }
+
+    public int GetCurrentWave()
+    {
+        return currentWave;
+    }
+
     public Wave GetWaveData()
     {
         return waves[currentWave];

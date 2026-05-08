@@ -13,6 +13,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float sensitivity;
     
+    [SerializeField] GameObject pauseText;
+
+    GameManager gameManager;
+    bool pauseGame;
+
+    void Start()
+    {
+        gameManager = GameManager.Instance;
+        pauseText.SetActive(false);
+        pauseGame = false;
+    }
+
     void Update()
     {
         movementInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
@@ -22,6 +34,21 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButton(1))
             MoveCamera();
+        
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            pauseGame = !pauseGame;
+            pauseText.SetActive(pauseGame);
+
+            if (pauseGame)
+            {
+                Time.timeScale = 0;
+            }
+            else
+            {
+                Time.timeScale = 1;
+            }
+        }
     }
 
     private void MovePlayer()

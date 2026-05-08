@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class EnemyManager : MonoBehaviour
 
     GameManager gameManager;
     WaveManager waveManager;
+    EndManager endManager;
     public List<Enemy> spawnedEnemies;
     public List<Transform> spawnedEnemiesTransform;
     public Dictionary<EnemyType, GameObject> enemyPrefabs;
@@ -32,6 +34,7 @@ public class EnemyManager : MonoBehaviour
     {
         gameManager = GameManager.Instance;
         waveManager = WaveManager.Instance;
+        endManager = EndManager.Instance;
         spawnedEnemies = new();
         spawnedEnemiesTransform = new();
         enemyPrefabs = new();
@@ -106,6 +109,13 @@ public class EnemyManager : MonoBehaviour
             gameManager.isWaveActive = false;
             waveManager.GiveWaveBonus();
             enemiesDefeatedThisWWave = 0;
+
+            if (waveManager.GetCurrentWave() == waveManager.GetTotalWaves() - 1)
+            {
+                gameManager.runGame = false;
+                endManager.HasWonGame = true;
+                SceneManager.LoadScene("End Screen");
+            }
         }
     }
 }

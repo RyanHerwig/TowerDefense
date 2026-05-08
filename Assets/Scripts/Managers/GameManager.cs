@@ -5,6 +5,7 @@ using Unity.Collections;
 using UnityEngine.Jobs;
 using Unity.Jobs;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
 
     AmmoManager ammoManager;
     EnemyManager enemyManager;
+    EndManager endManager;
     TowerTarget towerTarget;
 
     public bool isWaveActive;
@@ -100,11 +102,14 @@ public class GameManager : MonoBehaviour
                 // If so, lose life
                 if (currentEnemy.NodeIndex == nodePositions.Length)
                 {
-                    player.UpdateHealth((int) -currentEnemy.Health);
+                    player.UpdateHealth((int)-currentEnemy.Health);
                     EnqueueRemoveEnemy(currentEnemy);
-
                     if (player.Health <= 0)
+                    {
                         runGame = false;
+                        endManager.HasWonGame = false;
+                        SceneManager.LoadScene("End Screen");
+                    }
                 }
             }
 
@@ -335,6 +340,7 @@ public class GameManager : MonoBehaviour
         player = TowerPlacement.Instance;
         enemyManager = EnemyManager.Instance;
         enemyManager.Init();
+        endManager = EndManager.Instance;
 
         ammoManager = AmmoManager.Instance;
         ammoManager.Init();
